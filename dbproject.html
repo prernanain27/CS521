@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+  <title>CS521- Google Map Project</title> 
+  <script src="http://maps.google.com/maps/api/js?sensor=false" 
+          type="text/javascript"></script>
+  <script type="text/javascript" src="details.json"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false">
+ </script> 
+</head> 
+<body>
+<div id="abc" style="width:100%;height:200px">
+<h2>Google Map :Spatial Database Project</h2>
+<h2> Course:CECS 521 Advanced Database Architecture																			<a href="https://web.csulb.edu/divisions/aa/catalog/current/coe/computer_engineering/cecs_grad.html">ABOUT THE COURSE</a>	</h2>
+<h4><a href="https://web.csulb.edu/colleges/coe/cecs/views/personnel/part_time/parvini.shtml">ABOUT THE PROFESSOR</a></h4>
+<h4>Course Instructor: Dr. Farid Parvini(Ph.D. in Computer Science
+* M.S. in Computer Science
+* M.S. in Biomechanical Engineering (cum laude)
+* B.S. in Mechanical Engineering (cum laude)
+* B.S. in Mathematics)</h4>
+</div>
+
+
+<div id="map" style="width:100%;height:500px"></div>
+
+
+ <script>
+  var delay = 100;
+  var infowindow = new google.maps.InfoWindow();
+  var latlng = new google.maps.LatLng(33.7700,-118.1937);
+  var mapOptions = {
+    zoom: 5,
+    center: latlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  var geocoder = new google.maps.Geocoder(); 
+  var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+  var bounds = new google.maps.LatLngBounds();
+
+  function geocodeAdd(address, next) {
+    geocoder.geocode({address:address}, function (results,status)
+      { 
+         if (status == google.maps.GeocoderStatus.OK) {
+          var p = results[0].geometry.location;
+          var lat=p.lat();
+          var lng=p.lng();
+          createMark(address,lat,lng);
+        }
+        else {
+           if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+            nextAddress--;
+            delay++;
+          } else {
+                        }   
+        }
+        next();
+      }
+    );
+  }
+ function createMark(add,lat,lng) {
+   var contentString = add;
+   var marker = new google.maps.Marker({
+     position: new google.maps.LatLng(lat,lng),
+     map: map,
+           });
+
+  google.maps.event.addListener(marker, 'click', function() {
+     infowindow.setContent(contentString); 
+     infowindow.open(map,marker);
+   });
+
+   bounds.extend(marker.position);
+
+ }
+
+ 
+ 
+  var nextAddress = 0;
+
+  //alert(place.length);
+  function point() {
+  	
+    if (nextAddress < place.length) {
+      setTimeout('geocodeAdd("'+place[nextAddress].City+","+place[nextAddress].State+'",point)', delay);
+      //alert(place[nextAddress].City);
+      nextAddress++;
+    } else {
+      map.fitBounds(bounds);
+    }
+  }
+  point();
+
+</script>
+
+</body>
+</html>
